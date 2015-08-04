@@ -1,0 +1,87 @@
+doctype html
+html.
+    <head>
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+        <style type="text/css">
+          html, body, #map-canvas { height: 100%; margin: 0; padding: 0;}
+          body {
+            background:#f3f3f3;
+            color: rgba(0,0,0,0.6);
+            font-family: 'Avenir', 'Helvetica Neue', Helvetica, sans-serif;
+            text-align:center;
+          }
+          #map-canvas {
+            border-top: solid rgba(0,0,0,0.6) 3px;
+            height:90%;
+          }
+        </style>
+        <script type="text/javascript"
+          src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC5eDIJARZVmVFJocSLDwNQ267dSFxLshQ">
+        </script>
+        <script src="/socket.io/socket.io.js"></script>
+        <script>
+          var socket = io.connect();
+          socket.on('loc', function (data) {
+            lat = parseFloat(data.split(' # ')[0].split(', ')[0]);
+            longi = parseFloat(data.split(' # ')[0].split(', ')[1]);
+            var myLatlng = new google.maps.LatLng(lat,longi);
+            var mapOptions = {
+              center: myLatlng,
+              zoom: 10,
+              mapTypeId: google.maps.MapTypeId.HYBRID
+            };
+            var contentString = '<div id="content">'+data.split(' # ')[1]+'</div>';
+            var map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
+            var infowindow = new google.maps.InfoWindow({
+                 content: contentString
+            });
+            marker = new google.maps.Marker({
+                  position: myLatlng,
+                  map: map,
+                  title: 'Ayo homie!',
+                  animation: google.maps.Animation.DROP,
+
+              });
+
+              google.maps.event.addListener(marker, 'click', function() {
+                infowindow.open(map,marker);
+              });
+              infowindow.open(map,marker);
+          });
+        </script>
+        <script type="text/javascript">
+
+          function initialize() {
+            var myLatlng = new google.maps.LatLng(29.7925,-95.8225);
+            var mapOptions = {
+              center: myLatlng,
+              zoom: 10,
+              mapTypeId: google.maps.MapTypeId.HYBRID
+            };
+            var map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
+
+            var contentString = '<div id="content">'+'Awaiting a GPS Ping...'+'</div>';
+            var map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
+            var infowindow = new google.maps.InfoWindow({
+                 content: contentString
+            });
+            marker = new google.maps.Marker({
+                  position: myLatlng,
+                  map: map,
+                  title: 'Ayo homie!',
+                  animation: google.maps.Animation.DROP,
+
+              });
+
+              google.maps.event.addListener(marker, 'click', function() {
+                infowindow.open(map,marker);
+              });
+              infowindow.open(map,marker);
+          }
+          var map = google.maps.event.addDomListener(window, 'load', initialize);
+        </script>
+      </head>
+      <body>
+      <h1><i class="fa fa-rocket"></i>  HORIZON</h1>
+    <div id="map-canvas"></div>
+      </body>
